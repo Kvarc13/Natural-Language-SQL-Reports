@@ -1,0 +1,2 @@
+"user_id","user_first_name","user_last_name","user_email","user_type","user_company_name","publisher_feed_name","publisher_feed_hash","publisher_feed_id","publisher_revenue_stream","is_injection","is_magic"
+"SAMPLE-fda0-11ef-934a-12e7df18c6dd","Matt","Wilson","admin@sample.com","Publisher",NULL,"MS | DOMAIN | Network1","infuscate-bober",5045,"DOMAIN",False,False

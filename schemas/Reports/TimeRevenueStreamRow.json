@@ -1,0 +1,61 @@
+{
+  "report_name": "TimeRevenueStreamRow",
+  "display_name": "By Revenue Stream (All)",
+  "one_liner": "Revenue and traffic totals per BUSINESS revenue stream (DOMAIN/MAGIC/SEARCH/POPUP/SHOPNOMIX) — the direct answer to 'per revenue stream' questions.",
+  "description": "One row per business revenue stream, with the full funnel and financials. This is the ONLY report that exposes the REVENUE_STREAM column directly — use it whenever the user asks for anything 'per revenue stream' or names a business stream (DOMAIN, MAGIC, SEARCH, POPUP, SHOPNOMIX). Do NOT use TRAFFIC_SOURCE_ENUM on another report for this: that column returns only the technical types (Search/Domain/Pop Up) and hides MAGIC and SHOPNOMIX inside them. This report has NO other breakdown dimensions (no feed, advertiser, campaign, geo) — it is a pure stream-level rollup; for per-feed or per-advertiser detail use MasterReportRow.",
+  "traffic_type": "All",
+  "scope_and_overlap": "Covers ALL Zeropark traffic, already split by business revenue stream — the streams are mutually exclusive partitions, so their rows sum to the whole-Zeropark total with NO double counting. This report is self-contained: NEVER add it on top of MasterReportRow or a Search* report (that would count traffic twice). Use it ALONE for stream-level totals.",
+  "filters": {
+    "required": [],
+    "optional": [
+      "REVENUE_STREAM"
+    ]
+  },
+  "generation_options": {
+    "filters_usage": "Filters are FULLY SUPPORTED at generation time — pass them in generate_zeropark_report; do NOT defer filtering to SQL. Format: filters=[{\"name\": \"REVENUE_STREAM\", \"values\": [\"MAGIC\", \"SHOPNOMIX\"]}]. REVENUE_STREAM values are the business streams: DOMAIN, MAGIC, SEARCH, POPUP, SHOPNOMIX (uppercase). Omit the filter to get every stream (one row each).",
+    "time_aggregation": {
+      "allowed": [
+        "none",
+        "BY_HOUR",
+        "BY_DAY",
+        "BY_MONTH"
+      ],
+      "default": "none",
+      "note": "With BY_HOUR/BY_DAY/BY_MONTH a time column is ADDED AUTOMATICALLY to the report — do not put it in dimensions. These are the ONLY valid values; there is no week aggregation. With 'none' you get one row per revenue stream for the whole period. Use BY_HOUR only if directly asked; it is not a good idea for large reports."
+    },
+    "dates": "date_from/date_to use 'YYYY-MM-DD HH' (hour precision, UTC). date_to is an EXCLUSIVE end boundary (a point in time): to cover a full day X, end at the NEXT day's 00. Yesterday = '2026-08-02 00' -> '2026-08-03 00'; last 7 full days = '2026-07-27 00' -> '2026-08-03 00'. Ending at 'X 23' drops the 23:00-23:59 hour — never do that for whole-day ranges."
+  },
+  "columns": {
+    "dimensions": {
+      "revenue_stream": [
+        "REVENUE_STREAM"
+      ]
+    },
+    "metrics": {
+      "traffic_funnel": [
+        "RAW_VISITS",
+        "TOTAL_VISITS",
+        "WINS",
+        "IMPRESSIONS",
+        "SOLD_VISITS",
+        "SOLD",
+        "INVALID_VISIT"
+      ],
+      "financials": [
+        "PUBLISHER_PAYOUT",
+        "ADVERTISER_COST",
+        "PROFIT",
+        "MARGIN",
+        "AVERAGE_COST",
+        "AVERAGE_PAYOUT"
+      ],
+      "ratios": [
+        "INVALID_VISIT_PERCENT",
+        "SOLD_TO_WINS_PERCENT",
+        "PROFIT_TO_WIN",
+        "PROFIT_TO_SOLD"
+      ]
+    },
+    "_metric_notes": "PROFIT = ADVERTISER_COST - PUBLISHER_PAYOUT. MARGIN = PROFIT / ADVERTISER_COST (aggregate it weighted: SUM(PROFIT)/SUM(ADVERTISER_COST), never average the row values). ADVERTISER_COST = Zeropark revenue (money advertisers spent). PUBLISHER_PAYOUT = traffic cost. Funnel order: RAW_VISITS -> TOTAL_VISITS (after filtering) -> WINS -> SOLD_VISITS; INVALID_VISIT is RTB post-click invalidation, excluded from SOLD. 'net revenue' usually means PROFIT (gross profit) — confirm if ambiguous."
+  }
+}

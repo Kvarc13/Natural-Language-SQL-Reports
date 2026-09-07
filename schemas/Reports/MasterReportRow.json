@@ -1,0 +1,149 @@
+{
+  "report_name": "MasterReportRow",
+  "display_name": "Master Report (Redirect)",
+  "one_liner": "Master Report Redirect — all dimensions without Target",
+  "description": "Main Redirect report (POP + Domain + Commerce Media) with the full set of dimensions. 22 optional filters: publisher, source, advertiser, campaign, category, country, device, OS, browser, carrier, adult, brand, etc. Does NOT include the Target dimension (scaling problem — millions of targets). For deep ad-hoc analysis with arbitrary regrouping.",
+  "traffic_type": "Redirect",
+  "scope_and_overlap": "COVERS ALL Zeropark traffic: POP, DOMAIN and Commerce Media/Search (SEARCH_TILES rows are INCLUDED here). For whole-Zeropark totals or per-traffic-type breakdowns use THIS report ALONE. NEVER add SearchMasterReportRow / SearchTargetMasterReportRow numbers on top — their Search data is already inside this report; summing the two double-counts Search (empirically verified: Search profit came out 2x).",
+  "filters": {
+    "required": [],
+    "optional": [
+      "PUBLISHER",
+      "PUBLISHER_FEED",
+      "ADVERTISER",
+      "CAMPAIGN",
+      "CAMPAIGN_CATEGORY",
+      "TRAFFIC_SOURCE_ENUM",
+      "COUNTRY_CODE",
+      "DEVICE_TYPE_ENUM",
+      "DETAILED_DEVICE_TYPE_ENUM",
+      "DESKTOP_OS_TYPE_ENUM",
+      "MOBILE_OS_TYPE_ENUM",
+      "OS_VERSION",
+      "BROWSER_TYPE_ENUM",
+      "BROWSER",
+      "BROWSER_VERSION",
+      "MOBILE_CARRIER",
+      "ADULT",
+      "TRACKED",
+      "HAS_CONVERSIONS",
+      "ADULT_SETTINGS_SHIFTED",
+      "ADVERTISER_FEED"
+    ]
+  },
+  "generation_options": {
+    "filters_usage": "Filters are FULLY SUPPORTED at generation time — pass them in generate_zeropark_report; do NOT defer filtering to SQL. Format: filters=[{\"name\": \"<FILTER_NAME>\", \"values\": [\"v1\", \"v2\"]}]. Names must come from this schema's filters lists. PUBLISHER_FEED takes publisher_feed_hash values (e.g. 'ibis-leopard'), NOT display names. Filters listed under filters.required accept exactly one value.",
+    "time_aggregation": {
+      "allowed": [
+        "none",
+        "BY_HOUR",
+        "BY_DAY",
+        "BY_MONTH"
+      ],
+      "default": "none",
+      "note": "With 'BY_HOUR' or 'BY_DAY' and BY_MONTH a time column is ADDED AUTOMATICALLY to the report — do not put it in dimensions. These are the ONLY valid values; there is no week aggregation. Use BY_HOUR aggregation only if directly asked for; it is not a good idea for large reports"
+    },
+    "dates": "date_from/date_to use 'YYYY-MM-DD HH' (hour precision, UTC). date_to is an EXCLUSIVE end boundary (a point in time): to cover a full day X, end at the NEXT day's 00. Yesterday = '2026-08-02 00' -> '2026-08-03 00'; last 7 full days = '2026-07-27 00' -> '2026-08-03 00'. Ending at 'X 23' drops the 23:00-23:59 hour — never do that for whole-day ranges."
+  },
+  "columns": {
+    "dimensions": {
+      "publisher_identity": [
+        "PUBLISHER",
+        "PUBLISHER_ID",
+        "PUBLISHER_NAME",
+        "PUBLISHER_EMAIL"
+      ],
+      "publisher_feed_identity": [
+        "PUBLISHER_FEED",
+        "PUBLISHER_FEED_ID",
+        "PUBLISHER_FEED_NAME",
+        "PUBLISHER_FEED_HASH",
+        "PUBLISHER_FEED_TRAFFIC_SOURCE_TYPE"
+      ],
+      "advertiser_identity": [
+        "ADVERTISER",
+        "ADVERTISER_ID",
+        "ADVERTISER_NAME",
+        "ADVERTISER_EMAIL"
+      ],
+      "advertiser_feed_identity": [
+        "ADVERTISER_FEED",
+        "ADVERTISER_FEED_ID",
+        "ADVERTISER_FEED_NAME"
+      ],
+      "campaign_identity": [
+        "CAMPAIGN",
+        "CAMPAIGN_ID",
+        "CAMPAIGN_NAME",
+        "CAMPAIGN_TRACKS_CONVERSIONS"
+      ],
+      "campaign_category": [
+        "CAMPAIGN_CATEGORY",
+        "CAMPAIGN_CATEGORY_NAME"
+      ],
+      "geography": [
+        "COUNTRY_CODE",
+        "COUNTRY_NAME"
+      ],
+      "device_and_targeting": [
+        "DEVICE_TYPE_ENUM",
+        "DETAILED_DEVICE_TYPE_ENUM",
+        "DESKTOP_OS_TYPE_ENUM",
+        "MOBILE_OS_TYPE_ENUM",
+        "OS_VERSION",
+        "BROWSER_TYPE_ENUM",
+        "BROWSER",
+        "BROWSER_VERSION",
+        "MOBILE_CARRIER",
+        "MOBILE_OS_TYPE_ENUM_GROUP"
+      ],
+      "traffic_and_content": [
+        "TRAFFIC_SOURCE_ENUM",
+        "ADULT",
+        "TRACKED",
+        "HAS_CONVERSIONS",
+        "ADULT_SETTINGS_SHIFTED"
+      ]
+    },
+    "metrics": {
+      "funnel_metrics": [
+        "RAW_VISITS",
+        "TOTAL_VISITS",
+        "ADV_FEED_REQUESTS",
+        "WINS",
+        "MATCHED_TARGETING",
+        "SOLD_VISITS"
+      ],
+      "financial_metrics": [
+        "ADVERTISER_PAYOUT",
+        "PUBLISHER_PAYOUT",
+        "ADVERTISER_COST",
+        "PROFIT",
+        "MARGIN",
+        "SOLD",
+        "AVERAGE_COST",
+        "AVERAGE_PAYOUT",
+        "PROFIT_TO_WIN",
+        "PROFIT_TO_SOLD"
+      ],
+      "conversion_metrics": [
+        "CONVERSIONS",
+        "AVG_CONVERSION_RATE",
+        "AVG_COST_PER_CONVERSION"
+      ],
+      "rate_metrics": [
+        "FILTERED_OUT_VISITS_PERCENT",
+        "WINS_TO_TOTAL_PERCENT",
+        "SOLD_TO_WINS_PERCENT",
+        "INVALID_VISIT_PERCENT"
+      ],
+      "invalidation_metrics": [
+        "INVALID_VISIT"
+      ],
+      "traffic_type_metrics": [
+        "TRAFFIC_JS_REDIRECTED",
+        "TRAFFIC_302_REDIRECTED"
+      ]
+    }
+  }
+}

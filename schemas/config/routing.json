@@ -1,0 +1,33 @@
+{
+  "_readme": "Report-routing + limits config for the Zeropark MCP server. Upload to s3://zeropark-reports-datalake/schemas/config/routing.json. Edits apply on warm containers within PROMPT_CACHE_TTL_SEC (default 5 min) — no redeploy, no cold start. If missing or malformed, lib/routing.py falls back to identical built-in defaults. Keys read: 'stream_to_report' (publisher_revenue_stream -> report; MAGIC intentionally omitted, it can appear on either side), 'range_limits' (global per-aggregation caps: max_range_days are HARD, confirm_range_days trigger the confirm_large user-consent gate; a schema's own 'limits' block overrides these per report), and 'redirect_rules' (wrong-report-for-this-question checks; 'when' AND-combines report / report_not / sole_dimension / has_dimension). When changing range_limits, update the prompt docs (core_rules.md, analysis_rules.md, readme.md) in the same motion — enforcement reads this file, the numbers the model quotes live there. The old keys search_only_columns / revenue_stream_report / traffic_source_column are obsolete (column validation now comes from the report schemas themselves via lib/report_registry.py) but old-format files are still parsed correctly.",
+  "stream_to_report": {
+    "SEARCH": "SearchMasterReportRow",
+    "SHOPNOMIX": "SearchMasterReportRow",
+    "DOMAIN": "MasterReportRow",
+    "POPUP": "MasterReportRow"
+  },
+  "range_limits": {
+    "max_range_days": {
+      "BY_HOUR": 14,
+      "BY_DAY": 185,
+      "BY_MONTH": 735,
+      "none": 735
+    },
+    "confirm_range_days": {
+      "BY_HOUR": 3,
+      "BY_DAY": 95,
+      "BY_MONTH": 185,
+      "none": 95
+    }
+  },
+  "redirect_rules": [
+    {
+      "when": {
+        "report_not": "TimeRevenueStreamRow",
+        "sole_dimension": "TRAFFIC_SOURCE_ENUM"
+      },
+      "suggest": "TimeRevenueStreamRow",
+      "message": "TRAFFIC_SOURCE_ENUM returns only the TECHNICAL traffic types (Search/Domain/Pop Up) and hides the business revenue streams MAGIC and SHOPNOMIX inside them — it does NOT answer a 'per revenue stream' question. Use report_name='TimeRevenueStreamRow' instead: it has a REVENUE_STREAM column (DOMAIN/MAGIC/SEARCH/POPUP/SHOPNOMIX) and the same financial metrics. Call get_report_schema('TimeRevenueStreamRow') for its exact columns, then regenerate. If you genuinely want the technical Search/Domain/Pop split (not business streams), add another dimension alongside TRAFFIC_SOURCE_ENUM to signal that intent."
+    }
+  ]
+}

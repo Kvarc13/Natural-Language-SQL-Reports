@@ -1,0 +1,26 @@
+[
+  {
+    "report_name": "MasterReportRow",
+    "display_name": "Master Report (Redirect)",
+    "traffic_type": "Redirect",
+    "one_liner": "Master Report Redirect — all dimensions without Target"
+  },
+  {
+    "report_name": "SearchMasterReportRow",
+    "display_name": "Search Master Report (Search)",
+    "traffic_type": "Search",
+    "one_liner": "Master Report Search/Commerce Media — all dimensions without Target"
+  },
+  {
+    "report_name": "SearchTargetMasterReportRow",
+    "display_name": "Search Master Report (with Target) (Search)",
+    "traffic_type": "Search",
+    "one_liner": "Master Report Search with Target — deepest Commerce Media analysis"
+  },
+  {
+    "report_name": "TimeRevenueStreamRow",
+    "display_name": "By Revenue Stream (All)",
+    "traffic_type": "All",
+    "one_liner": "Totals per BUSINESS revenue stream (DOMAIN/MAGIC/SEARCH/POPUP/SHOPNOMIX) — use for any 'per revenue stream' question; the only report with a REVENUE_STREAM column."
+  }
+]

@@ -1,0 +1,193 @@
+{
+  "report_name": "SearchMasterReportRow",
+  "display_name": "Search Master Report (Search)",
+  "one_liner": "Master Report Search/Commerce Media — all dimensions without Target",
+  "description": "Main Search/Commerce Media report — without the Target dimension. 26 optional filters including BRAND, EXTERNAL_PUBLISHER, SEARCH_TYPE, PLACEMENT_ORIGIN, PLACEMENT_ID, PLACEMENT_CATEGORY_ID. Full pipeline, financials, full invalidation, redirect types, Sovrn discrepancies, biddings. For deep Commerce Media analysis with arbitrary regrouping — but without per-target granularity.",
+  "traffic_type": "Search",
+  "scope_and_overlap": "SUBSET view: Search/Commerce Media traffic ONLY, with Search-specific dimensions (BRAND, PLACEMENT_*, SEARCH_TYPE...). This SAME traffic is ALSO included in MasterReportRow. NEVER sum this report with MasterReportRow — that double-counts Search. Use it for Search-only deep dives; for a whole-Zeropark picture use MasterReportRow alone.",
+  "filters": {
+    "required": [],
+    "optional": [
+      "TRAFFIC_SOURCE_ENUM_SHIFTED",
+      "PUBLISHER",
+      "PUBLISHER_FEED",
+      "ADVERTISER",
+      "CAMPAIGN",
+      "CAMPAIGN_CATEGORY",
+      "COUNTRY_CODE",
+      "DEVICE_TYPE_ENUM",
+      "DETAILED_DEVICE_TYPE_ENUM",
+      "DESKTOP_OS_TYPE_ENUM",
+      "MOBILE_OS_TYPE_ENUM",
+      "OS_VERSION",
+      "BROWSER_TYPE_ENUM",
+      "BROWSER",
+      "BROWSER_VERSION",
+      "MOBILE_CARRIER",
+      "TRACKED",
+      "HAS_CONVERSIONS",
+      "BRAND",
+      "ADVERTISER_FEED",
+      "EXTERNAL_PUBLISHER",
+      "SEARCH_TYPE",
+      "PLACEMENT_ORIGIN",
+      "PLACEMENT_ID",
+      "PLACEMENT_CATEGORY_ID"
+    ]
+  },
+  "generation_options": {
+    "filters_usage": "Filters are FULLY SUPPORTED at generation time — pass them in generate_zeropark_report; do NOT defer filtering to SQL. Format: filters=[{\"name\": \"<FILTER_NAME>\", \"values\": [\"v1\", \"v2\"]}]. Names must come from this schema's filters lists. PUBLISHER_FEED takes publisher_feed_hash values (e.g. 'ibis-leopard'), NOT display names. Filters listed under filters.required accept exactly one value.",
+    "time_aggregation": {
+      "allowed": [
+        "none",
+        "BY_HOUR",
+        "BY_DAY",
+        "BY_MONTH"
+      ],
+      "default": "none",
+      "note": "With 'BY_HOUR' or 'BY_DAY' and BY_MONTH a time column is ADDED AUTOMATICALLY to the report — do not put it in dimensions. These are the ONLY valid values; there is no week aggregation. Use BY_HOUR aggregation only if directly asked for; it is not a good idea for large reports"
+    },
+    "dates": "date_from/date_to use 'YYYY-MM-DD HH' (hour precision, UTC). date_to is an EXCLUSIVE end boundary (a point in time): to cover a full day X, end at the NEXT day's 00. Yesterday = '2026-08-02 00' -> '2026-08-03 00'; last 7 full days = '2026-07-27 00' -> '2026-08-03 00'. Ending at 'X 23' drops the 23:00-23:59 hour — never do that for whole-day ranges."
+  },
+  "columns": {
+    "dimensions": {
+      "publisher_identity": [
+        "PUBLISHER",
+        "PUBLISHER_ID",
+        "PUBLISHER_NAME",
+        "PUBLISHER_EMAIL"
+      ],
+      "publisher_feed_identity": [
+        "PUBLISHER_FEED",
+        "PUBLISHER_FEED_ID",
+        "PUBLISHER_FEED_NAME",
+        "PUBLISHER_FEED_HASH",
+        "PUBLISHER_FEED_TRAFFIC_SOURCE_TYPE"
+      ],
+      "advertiser_identity": [
+        "ADVERTISER",
+        "ADVERTISER_ID",
+        "ADVERTISER_NAME",
+        "ADVERTISER_EMAIL"
+      ],
+      "advertiser_feed_identity": [
+        "ADVERTISER_FEED",
+        "ADVERTISER_FEED_ID",
+        "ADVERTISER_FEED_NAME"
+      ],
+      "campaign_identity": [
+        "CAMPAIGN",
+        "CAMPAIGN_ID",
+        "CAMPAIGN_NAME",
+        "CAMPAIGN_TRACKS_CONVERSIONS"
+      ],
+      "campaign_category": [
+        "CAMPAIGN_CATEGORY",
+        "CAMPAIGN_CATEGORY_NAME"
+      ],
+      "brand": [
+        "BRAND"
+      ],
+      "geography": [
+        "COUNTRY_CODE",
+        "COUNTRY_NAME"
+      ],
+      "placement_category": [
+        "PLACEMENT_ORIGIN",
+        "PLACEMENT_ID",
+        "PLACEMENT_CATEGORY_ID",
+        "PLACEMENT_CATEGORY_NAME"
+      ],
+      "device_and_targeting": [
+        "DEVICE_TYPE_ENUM",
+        "DETAILED_DEVICE_TYPE_ENUM",
+        "DESKTOP_OS_TYPE_ENUM",
+        "MOBILE_OS_TYPE_ENUM",
+        "OS_VERSION",
+        "BROWSER_TYPE_ENUM",
+        "BROWSER",
+        "BROWSER_VERSION",
+        "MOBILE_CARRIER",
+        "MOBILE_OS_TYPE_ENUM_GROUP"
+      ],
+      "traffic_and_content": [
+        "TRAFFIC_SOURCE_ENUM_SHIFTED",
+        "TRACKED",
+        "HAS_CONVERSIONS",
+        "EXTERNAL_PUBLISHER",
+        "SEARCH_TYPE"
+      ]
+    },
+    "metrics": {
+      "funnel_metrics": [
+        "RAW_VISITS",
+        "TOTAL_VISITS",
+        "BIDDINGS",
+        "ADV_FEED_REQUESTS",
+        "WINS",
+        "MATCHED_TARGETING",
+        "SOLD_VISITS",
+        "EXTERNAL_WINS"
+      ],
+      "financial_metrics": [
+        "ADVERTISER_PAYOUT",
+        "PUBLISHER_PAYOUT",
+        "ADVERTISER_COST",
+        "PROFIT",
+        "MARGIN",
+        "SOLD",
+        "AVERAGE_COST",
+        "AVERAGE_PAYOUT",
+        "PROFIT_TO_WIN",
+        "PROFIT_TO_SOLD"
+      ],
+      "conversion_metrics": [
+        "CONVERSIONS",
+        "AVG_CONVERSION_RATE",
+        "AVG_COST_PER_CONVERSION"
+      ],
+      "rate_metrics": [
+        "FILTERED_OUT_VISITS_PERCENT",
+        "WINS_TO_TOTAL_PERCENT",
+        "SOLD_TO_WINS_PERCENT",
+        "INVALID_VISIT_PERCENT"
+      ],
+      "invalidation_metrics": [
+        "DUPLICATED_REQUESTS",
+        "INVALID_VISIT",
+        "INVALID_BROWSER",
+        "INVALID_APP",
+        "INVALID_REFERER",
+        "INVALID_PROXY_IP",
+        "JS_FILTER_NOT_PASSED",
+        "WEBDRIVER_INVALIDATION",
+        "DATA_CENTER_IP_INVALIDATION",
+        "UA_MISMATCH",
+        "COUNTRY_CODE_MISMATCH",
+        "ISP_MISMATCH",
+        "DUPLICATION_DATA_MISMATCH",
+        "ADULT_REFERER_MISMATCH",
+        "VM_VISITOR_DETECTED",
+        "TIMEZONE_MISMATCH_DETECTED",
+        "DEVICE_MISMATCH_DETECTED",
+        "OS_MISMATCH_DETECTED",
+        "OS_VERSION_MISMATCH_DETECTED",
+        "BROWSER_MISMATCH_DETECTED",
+        "BLOCKED_USER_AGENT",
+        "DUPLICATE_VISITOR",
+        "DUPLICATE_HTML_VISITOR"
+      ],
+      "traffic_type_metrics": [
+        "TRAFFIC_JS_REDIRECTED",
+        "TRAFFIC_302_REDIRECTED"
+      ],
+      "discrepancy_metrics": [
+        "SOLD_DISCREPANCIES",
+        "SOLD_DISCREPANCIES_PERCENT"
+      ],
+      "other": [
+        "DUPLICATED_REQUESTS_PERCENT"
+      ]
+    }
+  }
+}
